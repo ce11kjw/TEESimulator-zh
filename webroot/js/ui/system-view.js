@@ -68,8 +68,8 @@ function healthCard(status) {
 
   const card = el("div", { class: "card" }, [
     el("h2", { text: "守护进程状态" }),
-    row("Daemon", el("span", { class: "status" }, [dot(status.daemonRunning ? "ok" : "off"), status.daemonRunning ? "运行中" : "已停止"])),
-    row("Interceptor", el("span", { class: "status" }, [dot(interceptorDot), interceptorText])),
+    row("守护进程", el("span", { class: "status" }, [dot(status.daemonRunning ? "ok" : "off"), status.daemonRunning ? "运行中" : "已停止"])),
+    row("拦截器", el("span", { class: "status" }, [dot(interceptorDot), interceptorText])),
     row("Hook", el("span", { class: "chips" }, [
       el("span", { class: "chip", text: status.hook || "未知" }),
       status.api ? el("span", { class: "chip", text: "API " + status.api }) : null,
@@ -78,7 +78,7 @@ function healthCard(status) {
   if (status.reachable === false) {
     card.appendChild(el("div", { class: "banner" }, [
       el("div", { text: "守护进程状态端点不可达。" }),
-      el("div", { class: "muted small", text: status.error || "The daemon isn't responding on 127.0.0.1:8790 yet." }),
+      el("div", { class: "muted small", text: status.error || "守护进程尚未在 127.0.0.1:8790 响应。" }),
     ]));
   }
   return card;
@@ -113,7 +113,7 @@ function harvestCard(status, actions = {}) {
   const overrides = (h.overrides && typeof h.overrides === "object" && !Array.isArray(h.overrides)) ? h.overrides : {};
   const sbAvailable = !!h.strongBoxAvailable;
   const modes = [
-    { key: "tee", label: "TrustedEnvironment" },
+    { key: "tee", label: "可信环境" },
     { key: "strongbox", label: "StrongBox" },
   ];
   if (failed || !modes.some((m) => m.key === harvestMode)) harvestMode = "tee";
@@ -231,7 +231,7 @@ function overrideRow(field, o, actions) {
   const save = el("button", {
     class: "btn small", type: "button",
     onclick: () => actions.onSaveOverride && actions.onSaveOverride(field, String(input.value).trim()),
-  }, "Save");
+  }, "保存");
   const reset = o.userEdited
     ? el("button", { class: "linklike small", type: "button", onclick: () => actions.onResetOverride && actions.onResetOverride(field) }, "重置")
     : null;
@@ -266,7 +266,7 @@ function fmtOverrideValue(field, value) {
 
 function secLevel(n) {
   if (n == null || Number.isNaN(n)) return "—";
-  const names = ["软件", "TrustedEnvironment", "StrongBox"];
+  const names = ["软件", "可信环境", "StrongBox"];
   return (typeof n === "number" && names[n] ? names[n] : String(n)) + " (" + n + ")";
 }
 
@@ -317,7 +317,7 @@ function updateCard(s, actions) {
   }
 
   const installed = update.installedVersion || (update.currentCode ? "build " + update.currentCode : "未知");
-  card.appendChild(row("Installed", el("span", { class: "mono small", text: installed })));
+  card.appendChild(row("已安装", el("span", { class: "mono small", text: installed })));
 
   const latest = update.latest;
   if (!latest) {
@@ -387,7 +387,7 @@ function whatsNew(latest) {
     nodes.push(el("div", { class: "muted small", text: "资源文件" }));
     nodes.push(el("ul", { class: "asset-list" }, assets.map((a) =>
       el("li", { class: "asset-row" }, [
-        el("span", { class: "mono small", text: a.name || "(unnamed)" }),
+        el("span", { class: "mono small", text: a.name || "(未命名)" }),
         el("span", { class: "muted small", text: humanSize(a.size) }),
       ]))));
   }
@@ -421,7 +421,7 @@ function humanSize(bytes) {
 
 // verifiedBootState is 0 Verified, 1 SelfSigned, 2 Unverified, 3 Failed.
 function named(state) {
-  const names = ["Verified", "SelfSigned", "Unverified", "Failed"];
+  const names = ["已验证", "自签名", "未验证", "失败"];
   if (state == null) return null;
   return typeof state === "number" && names[state] ? names[state] : String(state);
 }

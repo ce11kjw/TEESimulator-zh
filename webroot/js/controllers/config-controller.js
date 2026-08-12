@@ -412,7 +412,7 @@ export function create(mount) {
         if (uid >= 0 && uid < firstAppUid) {
           const ok = await confirmDialog(
             `Target privileged uid ${uid}?\n\nThis is a system/shell uid (e.g. shell, system_server), not a normal app. Only do this if you know exactly why.`,
-            { confirmLabel: "Target it", danger: true });
+            { confirmLabel: "定位", danger: true });
           if (!ok) return;
         }
         scopeDraft = scopeDraft.concat([entry]);
@@ -464,10 +464,10 @@ export function create(mount) {
       if (!ok) return;
       try {
         const r = await keyAdmin("usageClear");
-        toast("Cleared " + ((r && r.cleared) || 0) + " app" + (((r && r.cleared) || 0) === 1 ? "" : "s"));
+        toast("已清除 " + ((r && r.cleared) || 0) + " 个应用" + (((r && r.cleared) || 0) === 1 ? "" : "s"));
         console.log("[config] scope: usage cleared (%o)", r);
       } catch (e) {
-        toast("Clear failed: " + ((e && e.message) || e));
+        toast("清除失败：" + ((e && e.message) || e));
       }
       fetchPackages(false);
     },
@@ -477,10 +477,10 @@ export function create(mount) {
   // sets scopeSort and re-renders. It is a plain sheet built here (the controller owns dom.js).
   function openSortSheet() {
     const OPTIONS = [
-      { id: "freq", label: "Frequency", meaning: "Most key requests first (default)." },
-      { id: "recent", label: "Recently used", meaning: "Last requested first." },
-      { id: "name", label: "Name", meaning: "A→Z." },
-      { id: "install", label: "Install time", meaning: "Newest installs first." },
+      { id: "freq", label: "频率", meaning: "密钥请求最多的优先（默认）。" },
+      { id: "recent", label: "最近使用", meaning: "最近请求的优先。" },
+      { id: "name", label: "名称", meaning: "A→Z。" },
+      { id: "install", label: "安装时间", meaning: "最新安装的优先。" },
     ];
     let handle = null;
     const pick = (id) => { scopeSort = id; if (handle) handle.close(); renderScopeView(); };
@@ -497,7 +497,7 @@ export function create(mount) {
         el("span", { class: "sort-opt-check" + (scopeSort === o.id ? " on" : ""), "aria-hidden": "true" }),
       ]))),
     ]);
-    handle = openSheet(content, { label: "Sort order" });
+    handle = openSheet(content, { label: "排序方式" });
   }
 
   // ---- the one save path (used by both the list bar and the editor) -----
@@ -532,7 +532,7 @@ export function create(mount) {
       if (name == null) return;
       const trimmed = name.trim();
       if (!trimmed) return;
-      if (!PROFILE_RE.test(trimmed)) { toast("Name must be 1-32 chars: letters, digits, - or _."); return; }
+      if (!PROFILE_RE.test(trimmed)) { toast("名称必须为 1-32 个字符：字母、数字、- 或 _。"); return; }
       if (config.profiles[trimmed]) { toast("名为 " + trimmed + " 的配置已存在。"); return; }
       config.profiles[trimmed] = emptyProfile();
       dirty = true;

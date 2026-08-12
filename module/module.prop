@@ -1,0 +1,7 @@
+id=teesim
+name=TEESimulator
+version=${REPLACEMEVER}
+versionCode=${REPLACEMEVERCODE}
+author=JingMatrix
+description=为选定的应用将密钥认证重定向到进程内的参考 KeyMint 可信应用。
+updateJson=https://raw.githubusercontent.com/JingMatrix/TEESimulator/dev/module/update.json

@@ -196,7 +196,7 @@ export function renderScope(host, state, actions) {
         const isUid = UID_RE.test(entry);
         return el("span", {
           class: "chip removable scope-chip" + (isUid ? " advanced" : " warn"),
-          title: isUid ? "Advanced: targets caller uid " + entry.slice(4) : entry + " is not installed on this device",
+          title: isUid ? "Advanced: targets caller uid " + entry.slice(4) : entry + " 在此设备上未安装",
         }, [
           isUid ? el("span", { class: "chip-avatar-uid", "aria-hidden": "true", text: "#" }) : null,
           el("span", { class: "chip-text" + (isUid ? " mono" : ""), text: entry }),

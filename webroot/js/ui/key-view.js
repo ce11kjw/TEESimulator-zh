@@ -57,7 +57,7 @@ export function renderKeys(mount, state, handler) {
   if (selected.size) {
     actionBtns.push(el("button", {
       class: "btn danger", disabled: deleting,
-      text: deleting ? "删除中…" : "Delete selected (" + selected.size + ")",
+      text: deleting ? "删除中…" : "删除选中 (" + selected.size + ")",
       onclick: () => handler("deleteSelected"),
     }));
   }
@@ -89,9 +89,9 @@ export function renderKeys(mount, state, handler) {
     mount.appendChild(el("div", { class: "card" }, [el("div", { class: "banner" }, [
       el("div", { text: "此 Android 版本不支持密钥列表功能。" }),
       el("div", { class: "muted small", text:
-        "On Android 10 and 11 there is no keystore2 database to inspect, and the keys the module " +
-        "generates are session-scoped — kept only until the keystore restarts (persistence there " +
-        "is not yet implemented)." +
+        "在 Android 10 和 11 上没有 keystore2 数据库可供检查，模块生成的密钥是" +
+        "会话级的 — 仅在密钥库重启前保留（持久化功能" +
+        "尚未实现）。" +
         (apiLevel ? "  (Android API " + apiLevel + ")" : "") }),
     ])]));
     return;
@@ -191,7 +191,7 @@ function searchCard(filter, shown, menuOpen, spoofedOnly, hiddenReal, handler) {
       onclick: () => { if (!spoofedOnly) handler("toggleSpoofed"); },
     }),
     el("button", {
-      class: "seg" + (!spoofedOnly ? " on" : ""), type: "button", text: "All",
+      class: "seg" + (!spoofedOnly ? " on" : ""), type: "button", text: "全部",
       "aria-pressed": !spoofedOnly ? "true" : "false", title: "Include the apps' own real device keys",
       onclick: () => { if (spoofedOnly) handler("toggleSpoofed"); },
     }),
@@ -270,7 +270,7 @@ function metaLines(k) {
   const lines = [];
   if (k.keyAlgorithm) lines.push(metaLine("算法", k.keyAlgorithm));
   // Only attributed keys carry a keybox; omit the line entirely for untouched real keys.
-  if (k.keybox) lines.push(metaLine("Keybox", k.keybox));
+  if (k.keybox) lines.push(metaLine("密钥盒", k.keybox));
   if (k.created) lines.push(metaLine("创建时间", fmtDate(k.created)));
   return lines;
 }
