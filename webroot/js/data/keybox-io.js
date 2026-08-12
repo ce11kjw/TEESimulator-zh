@@ -41,11 +41,11 @@ export async function listKeyboxes() {
 // offer to overwrite. { ok, name? , error? }.
 export async function importKeybox(name, xmlText, existing = [], overwrite = false) {
   const safe = safeName(name);
-  if (!safe) return { ok: false, error: "无效的密钥盒名称。请使用字母、数字、. _ - 及 .xml 后缀。" };
+  if (!safe) return { ok: false, error: "Invalid keybox name. Use letters, digits, . _ - and an .xml suffix." };
 
   const text = xmlText == null ? "" : String(xmlText);
   if (!text.includes("<AndroidAttestation") && !text.includes("<Keybox")) {
-    return { ok: false, error: "该文件看起来不像密钥盒（没有 <AndroidAttestation> 或 <Keybox>）。" };
+    return { ok: false, error: "That file does not look like a keybox (no <AndroidAttestation> or <Keybox>)." };
   }
 
   if (!overwrite && existing.includes(safe)) {
@@ -61,8 +61,8 @@ export async function importKeybox(name, xmlText, existing = [], overwrite = fal
 export async function renameKeybox(oldName, newName, existing = []) {
   const from = safeName(oldName);
   const to = safeName(newName);
-  if (!from) return { ok: false, error: "当前密钥盒名称无效。" };
-  if (!to) return { ok: false, error: "新的密钥盒名称无效。请使用字母、数字、. _ - 及 .xml 后缀。" };
+  if (!from) return { ok: false, error: "Invalid current keybox name." };
+  if (!to) return { ok: false, error: "Invalid new keybox name. Use letters, digits, . _ - and an .xml suffix." };
   if (from === to) return { ok: true, name: to };
   if (existing.includes(to)) return { ok: false, error: `A keybox named ${to} already exists.` };
 
@@ -74,7 +74,7 @@ export async function renameKeybox(oldName, newName, existing = []) {
 // built, so rm only ever sees a file inside the module directory.
 export async function deleteKeybox(name) {
   const safe = safeName(name);
-  if (!safe) return { ok: false, error: "无效的密钥盒名称。" };
+  if (!safe) return { ok: false, error: "Invalid keybox name." };
 
   const r = await deleteFile(DIR + "/" + safe);
   return r.ok ? { ok: true, name: safe } : { ok: false, error: r.error };

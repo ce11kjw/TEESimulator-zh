@@ -134,7 +134,7 @@ function applistWidget(d, value, ctx) {
   const chips = el("div", { class: "applist" }, apps.length
     ? apps.map((pkg) => el("span", { class: "chip removable" }, [
         el("span", { class: "chip-text", text: pkg }),
-        el("button", { type: "button", class: "chip-x", "aria-label": "Remove " + pkg, text: "✕",
+        el("button", { type: "button", class: "chip-x", "aria-label": "移除 " + pkg, text: "✕",
           onclick: () => ctx.removeApp(pkg) }),
       ]))
     : [el("span", { class: "muted small", text: "暂无应用。" })]);
@@ -220,8 +220,8 @@ function scopeWidget(d, value, ctx) {
       const label = isUid ? entry : ((labelMap && labelMap.get && labelMap.get(entry)) || entry);
       return el("span", {
         class: "chip scope-chip" + (isUid ? " advanced" : "") + (missing ? " warn" : ""),
-        title: isUid ? "高级：目标调用者 UID " + entry.slice(4)
-          : missing ? entry + " 未安装（安装后将自动匹配）" : entry,
+        title: isUid ? "Advanced: targets caller uid " + entry.slice(4)
+          : missing ? entry + " is not installed (a name-match applies if it installs later)" : entry,
       }, [
         (isUid || missing) ? el("span", { class: "scope-chip-dot", "aria-hidden": "true" }) : null,
         el("span", { class: "chip-text" + (isUid ? " mono" : ""), text: label }),

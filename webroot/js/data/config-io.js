@@ -24,17 +24,17 @@ export async function load() {
   try {
     config = JSON.parse(raw);
   } catch (e) {
-    return { ok: false, error: "config.json 不是有效的 JSON：" + e.message, raw };
+    return { ok: false, error: "config.json is not valid JSON: " + e.message, raw };
   }
 
   if (!config || typeof config !== "object" || Array.isArray(config)) {
-    return { ok: false, error: "config.json 根节点必须是一个 JSON 对象。", raw };
+    return { ok: false, error: "config.json root must be a JSON object.", raw };
   }
   if (config.version !== 1) {
-    return { ok: false, error: "不支持的配置版本（期望 1）。", raw };
+    return { ok: false, error: "Unsupported config version (expected 1).", raw };
   }
   if (!config.profiles || typeof config.profiles !== "object" || Array.isArray(config.profiles)) {
-    return { ok: false, error: "config.json 缺少 profiles 对象。", raw };
+    return { ok: false, error: "config.json is missing a profiles object.", raw };
   }
 
   return { ok: true, config };

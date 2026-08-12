@@ -78,7 +78,7 @@ function healthCard(status) {
   if (status.reachable === false) {
     card.appendChild(el("div", { class: "banner" }, [
       el("div", { text: "守护进程状态端点不可达。" }),
-      el("div", { class: "muted small", text: status.error || "守护进程尚未在 127.0.0.1:8790 响应。" }),
+      el("div", { class: "muted small", text: status.error || "The daemon isn't responding on 127.0.0.1:8790 yet." }),
     ]));
   }
   return card;
@@ -86,10 +86,10 @@ function healthCard(status) {
 
 // --- harvest summary -----------------------------------------------------
 // A deliberately honest dump of the device state the daemon harvested, split into two groups.
-// "已采集" is ONLY what the real TEE key generation actually reported (raw, never overwritten): the
+// "Captured" is ONLY what the real TEE key generation actually reported (raw, never overwritten): the
 // verified-boot key/hash — shown even when all-zero — lock/boot state, patch and OS levels, security
 // levels, versions, and the device ids the leaf actually carried. A captured value that we do not present
-// (it has a fabricated counterpart) is struck + red. "已伪造" is the layer we present on top: values
+// (it has a fabricated counterpart) is struck + red. "Fabricated" is the layer we present on top: values
 // forced for attestation (deviceLocked, Verified), ids read from the OS because the leaf omits them, and,
 // on a device with no working hardware, a synthesized level/version.
 //
@@ -114,7 +114,7 @@ function harvestCard(status, actions = {}) {
   const sbAvailable = !!h.strongBoxAvailable;
   const modes = [
     { key: "tee", label: "可信环境" },
-    { key: "strongbox", label: "StrongBox安全芯片" },
+    { key: "strongbox", label: "StrongBox" },
   ];
   if (failed || !modes.some((m) => m.key === harvestMode)) harvestMode = "tee";
   const chipEls = modes.map((m) =>
@@ -159,8 +159,8 @@ function harvestCard(status, actions = {}) {
       if (val != null && val !== "") rows.appendChild(kvRow(label, String(val), overrides[label] != null));
     };
 
-    add("验证启动状态", h.verifiedBootState == null ? null : named(h.verifiedBootState) + " (" + h.verifiedBootState + ")");
-    add("设备锁定", h.deviceLocked == null ? null : String(h.deviceLocked));
+    add("verifiedBootState", h.verifiedBootState == null ? null : named(h.verifiedBootState) + " (" + h.verifiedBootState + ")");
+    add("deviceLocked", h.deviceLocked == null ? null : String(h.deviceLocked));
     if (h.verifiedBootKey) hexRow(rows, "verifiedBootKey", h.verifiedBootKey, overrides["verifiedBootKey"] != null);
     if (h.verifiedBootHash) hexRow(rows, "verifiedBootHash", h.verifiedBootHash, overrides["verifiedBootHash"] != null);
     add("osVersion", h.osVersion);
@@ -207,15 +207,12 @@ function overridesGroup(overrides, actions) {
 
 // A stable, readable order for the override rows (unknown fields fall to the end).
 const ORDER = [
-  "设备锁定", "验证启动状态", "verifiedBootKey", "verifiedBootHash",
+  "deviceLocked", "verifiedBootState", "verifiedBootKey", "verifiedBootHash",
   "attestationSecurityLevel", "keymasterSecurityLevel", "attestationVersion", "keymasterVersion",
   "moduleHash", "osVersion", "osPatchLevel", "vendorPatchLevel", "bootPatchLevel",
   "serial", "imei", "imei2", "meid",
 ];
 
-const SOURCE_LABEL = { required: "必需", supplement: "补充", synthesized: "合成" };
-
-// Field label translations for the harvest section
 const FIELD_LABEL = {
   verifiedBootState: "验证启动状态",
   deviceLocked: "设备锁定",
@@ -241,6 +238,7 @@ const FIELD_LABEL = {
   imei2: "IMEI2",
   harvestedAt: "采集时间",
 };
+const SOURCE_LABEL = { required: "必需", supplement: "补充", synthesized: "合成" };
 const HEX_FIELDS = new Set(["verifiedBootKey", "verifiedBootHash", "moduleHash"]);
 
 function overrideRow(field, o, actions) {
@@ -258,7 +256,7 @@ function overrideRow(field, o, actions) {
   const save = el("button", {
     class: "btn small", type: "button",
     onclick: () => actions.onSaveOverride && actions.onSaveOverride(field, String(input.value).trim()),
-  }, "保存");
+  }, "Save");
   const reset = o.userEdited
     ? el("button", { class: "linklike small", type: "button", onclick: () => actions.onResetOverride && actions.onResetOverride(field) }, "重置")
     : null;
@@ -269,7 +267,7 @@ function overrideRow(field, o, actions) {
 function editorFor(field, value) {
   if (field === "attestationSecurityLevel" || field === "keymasterSecurityLevel") {
     const sel = el("select", { class: "ov-input" });
-    for (const [n, name] of [[0, "软件"], [1, "TrustedEnvironment"], [2, "StrongBox"]]) {
+    for (const [n, name] of [[0, "软件"], [1, "可信环境"], [2, "StrongBox"]]) {
       const opt = el("option", { value: String(n), text: name + " (" + n + ")" });
       if (String(n) === String(value)) opt.selected = true;
       sel.appendChild(opt);
@@ -286,14 +284,14 @@ function editorFor(field, value) {
 // Display formatting for an override's machine value, by field.
 function fmtOverrideValue(field, value) {
   if (value == null || value === "") return "—";
-  if (field === "验证启动状态") return named(Number(value)) + " (" + value + ")";
+  if (field === "verifiedBootState") return named(Number(value)) + " (" + value + ")";
   if (field === "attestationSecurityLevel" || field === "keymasterSecurityLevel") return secLevel(Number(value));
   return String(value);
 }
 
 function secLevel(n) {
   if (n == null || Number.isNaN(n)) return "—";
-  const names = ["软件", "可信环境", "StrongBox安全芯片"];
+  const names = ["软件", "可信环境", "StrongBox"];
   return (typeof n === "number" && names[n] ? names[n] : String(n)) + " (" + n + ")";
 }
 
@@ -360,7 +358,7 @@ function updateCard(s, actions) {
   // An update is available: headline pill, what's-new disclosure, variant + Install.
   card.appendChild(el("div", { class: "update-head" }, [
     el("span", { class: "pill warn", text: "有可用更新" }),
-    el("span", { class: "mono small", text: "金丝雀-" + (latest.code || "?") }),
+    el("span", { class: "mono small", text: "canary-" + (latest.code || "?") }),
   ]));
   if (latest.name) card.appendChild(el("div", { class: "small", text: latest.name }));
 
@@ -414,7 +412,7 @@ function whatsNew(latest) {
     nodes.push(el("div", { class: "muted small", text: "资源文件" }));
     nodes.push(el("ul", { class: "asset-list" }, assets.map((a) =>
       el("li", { class: "asset-row" }, [
-        el("span", { class: "mono small", text: a.name || "(未命名)" }),
+        el("span", { class: "mono small", text: a.name || "(unnamed)" }),
         el("span", { class: "muted small", text: humanSize(a.size) }),
       ]))));
   }

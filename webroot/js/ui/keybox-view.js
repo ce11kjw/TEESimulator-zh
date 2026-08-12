@@ -43,7 +43,7 @@ export function renderKeyboxes(mount, state, actions) {
       // that wraps instead of shoving the Rename/Delete buttons off the row.
       el("button", {
         class: "kb-name mono", type: "button",
-        title: "检查 " + name, onclick: () => actions.inspect(name),
+        title: "Inspect " + name, onclick: () => actions.inspect(name),
       }, [
         el("span", { class: "kb-icon", "aria-hidden": "true" }),
         el("span", { class: "kb-file", text: name }),
@@ -79,7 +79,7 @@ export function renderKeyboxImport(state, actions) {
   return el("div", {}, [
     el("div", { class: "sheet-head" }, [
       el("h2", { text: "导入密钥盒" }),
-      el("button", { class: "iconbtn", type: "button", "aria-label": "Close", onclick: () => actions.close() }, [
+      el("button", { class: "iconbtn", type: "button", "aria-label": "关闭", onclick: () => actions.close() }, [
         el("span", { class: "x-mark", "aria-hidden": "true" }),
       ]),
     ]),
@@ -104,7 +104,7 @@ export function renderKeyboxInspect(state, actions) {
       el("div", { text: (data && data.error) || "无法检查此密钥盒。" }),
     ]));
   } else {
-    if (data.deviceId) body.appendChild(el("div", { class: "muted small", text: "设备ID: " + data.deviceId }));
+    if (data.deviceId) body.appendChild(el("div", { class: "muted small", text: "DeviceID: " + data.deviceId }));
     const keys = Array.isArray(data.keys) ? data.keys : [];
     if (!keys.length) body.appendChild(el("p", { class: "muted", text: "此密钥盒中未找到 <Key> 块。" }));
     for (const k of keys) body.appendChild(keyBlock(k));

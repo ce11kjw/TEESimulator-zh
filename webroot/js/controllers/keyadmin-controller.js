@@ -72,7 +72,7 @@ export function create(mount) {
       const n = (res && Number(res.deleted)) || 0;
       toast(n ? `Deleted ${n} key${n === 1 ? "" : "s"}` : "未删除任何密钥");
     } catch (e) {
-      toast("删除失败：" + (e && e.message ? e.message : String(e)));
+      toast("删除失败：" + (e "Delete failed: " + (e && e.message ? e.message : String(e))"Delete failed: " + (e && e.message ? e.message : String(e)) e.message ? e.message : String(e)));
     }
     state.deleting = false;
     state.selected = new Set();

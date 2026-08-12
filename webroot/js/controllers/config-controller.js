@@ -156,7 +156,7 @@ export function create(mount) {
       }),
     };
     editorHost = el("div", { class: "editor-host" });
-    editorOverlay = openOverlay(editorHost, { variant: "panel", label: "Edit profile", onClose: onEditorClosed });
+    editorOverlay = openOverlay(editorHost, { variant: "panel", label: "编辑配置", onClose: onEditorClosed });
     renderEditor();
     const title = editorHost.querySelector(".drill-title");
     if (title) title.focus();
@@ -256,7 +256,7 @@ export function create(mount) {
     scopeCommitted = false;
     scopePullBound = false;
     scopeHost = el("div", { class: "editor-host" });
-    scopeOverlay = openOverlay(scopeHost, { variant: "panel", label: "Scope", onClose: onScopeClosed });
+    scopeOverlay = openOverlay(scopeHost, { variant: "panel", label: "作用域", onClose: onScopeClosed });
 
     // Prefetch the admin token so /icon URLs build synchronously as rows render.
     adminToken().then((t) => { iconToken = t || null; if (scoping === name) renderScopeView(); }).catch(() => {});
@@ -337,7 +337,7 @@ export function create(mount) {
       // by the browser, desyncing the nav stack from history (a later Back would then over-pop). Defer
       // to a fresh task so the confirm's history push happens cleanly after this traversal finishes.
       setTimeout(() => {
-        confirmDialog("保留您所做的应用选择更改？", {
+        confirmDialog("Keep the app selection changes you made?", {
           confirmLabel: "保留", cancelLabel: "丢弃", danger: false,
         }).then((keep) => {
           if (keep && config.profiles[name]) {
@@ -412,7 +412,7 @@ export function create(mount) {
         if (uid >= 0 && uid < firstAppUid) {
           const ok = await confirmDialog(
             `Target privileged uid ${uid}?\n\nThis is a system/shell uid (e.g. shell, system_server), not a normal app. Only do this if you know exactly why.`,
-            { confirmLabel: "定位", danger: true });
+            { confirmLabel: "Target it", danger: true });
           if (!ok) return;
         }
         scopeDraft = scopeDraft.concat([entry]);
@@ -464,10 +464,10 @@ export function create(mount) {
       if (!ok) return;
       try {
         const r = await keyAdmin("usageClear");
-        toast("已清除 " + ((r && r.cleared) || 0) + " 个应用" + (((r && r.cleared) || 0) === 1 ? "" : "s"));
+        toast("Cleared " + ((r && r.cleared) || 0) + " app" + (((r && r.cleared) || 0) === 1 ? "" : "s"));
         console.log("[config] scope: usage cleared (%o)", r);
       } catch (e) {
-        toast("清除失败：" + ((e && e.message) || e));
+        toast("Clear failed: " + ((e && e.message) || e));
       }
       fetchPackages(false);
     },
@@ -477,15 +477,15 @@ export function create(mount) {
   // sets scopeSort and re-renders. It is a plain sheet built here (the controller owns dom.js).
   function openSortSheet() {
     const OPTIONS = [
-      { id: "freq", label: "频率", meaning: "密钥请求最多的优先（默认）。" },
-      { id: "recent", label: "最近使用", meaning: "最近请求的优先。" },
+      { id: "freq", label: "频率", meaning: "Most key requests first (default)." },
+      { id: "recent", label: "最近使用", meaning: "Last requested first." },
       { id: "name", label: "名称", meaning: "A→Z。" },
-      { id: "install", label: "安装时间", meaning: "最新安装的优先。" },
+      { id: "install", label: "安装时间", meaning: "Newest installs first." },
     ];
     let handle = null;
     const pick = (id) => { scopeSort = id; if (handle) handle.close(); renderScopeView(); };
     const content = el("div", { class: "sort-sheet" }, [
-      el("div", { class: "sheet-head" }, [el("h2", { text: "排序方式" })]),
+      el("div", { class: "sheet-head" }, [el("h2", { text: "Sort by" })]),
       el("div", { class: "sort-list" }, OPTIONS.map((o) => el("button", {
         type: "button", class: "sort-opt" + (scopeSort === o.id ? " on" : ""),
         "aria-pressed": scopeSort === o.id ? "true" : "false", onclick: () => pick(o.id),
@@ -528,12 +528,12 @@ export function create(mount) {
 
   const listActions = {
     async onAdd() {
-      const name = await promptDialog("新配置名称", "", { okLabel: "创建", placeholder: "配置名称" });
+      const name = await promptDialog("New profile name", "", { okLabel: "Create", placeholder: "profile-name" });
       if (name == null) return;
       const trimmed = name.trim();
       if (!trimmed) return;
       if (!PROFILE_RE.test(trimmed)) { toast("名称必须为 1-32 个字符：字母、数字、- 或 _。"); return; }
-      if (config.profiles[trimmed]) { toast("名为 " + trimmed + " 的配置已存在。"); return; }
+      if (config.profiles[trimmed]) { toast("A profile named " + trimmed + " already exists."); return; }
       config.profiles[trimmed] = emptyProfile();
       dirty = true;
       revalidate();

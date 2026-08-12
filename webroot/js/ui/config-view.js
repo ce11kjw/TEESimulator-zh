@@ -179,7 +179,7 @@ export function renderProfileEditor(host, state, actions) {
   // One line for the whole editor: an empty patch / OS / identity field falls back to the
   // value harvested from this device, shown on the System screen.
   body.appendChild(el("p", { class: "field-help editor-note" }, [
-    "补丁、系统版本或设备标识字段留空将使用",
+    "Leave a patch, OS, or identity field empty to use the value ",
     el("button", { type: "button", class: "linklike", onclick: () => actions.gotoSystem() }, "从此设备采集的值"),
     ".",
   ]));

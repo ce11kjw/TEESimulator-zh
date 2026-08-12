@@ -90,18 +90,18 @@ export function renderScope(host, state, actions) {
   // ---- search row: a leading search-icon button inside the field, a trailing sort button ----
   const searchInput = el("input", {
     id: SEARCH_ID, class: "input scope-search-input", type: "search", value: search,
-    placeholder: "搜索应用、包名或 UID…",
+    placeholder: "Search apps, packages, or uid…",
     autocapitalize: "off", autocorrect: "off", spellcheck: "false",
     oninput: (e) => actions.onSetSearch(e.target.value),
     onkeydown: (e) => { if (e.key === "Enter") { e.preventDefault(); actions.onSearchSubmit(); } },
   });
   body.appendChild(el("div", { class: "scope-search" }, [
     el("div", { class: "scope-search-field" }, [
-      el("button", { type: "button", class: "scope-search-btn", "aria-label": "搜索", onclick: () => actions.onSearchSubmit() }, [
+      el("button", { type: "button", class: "scope-search-btn", "aria-label": "Search", onclick: () => actions.onSearchSubmit() }, [
         svgIcon(ICON_SEARCH, { size: 18 }),
       ]),
       searchInput,
-      el("button", { type: "button", class: "scope-sort-btn", "aria-label": "排序方式", onclick: () => actions.onOpenSort() }, [
+      el("button", { type: "button", class: "scope-sort-btn", "aria-label": "Sort order", onclick: () => actions.onOpenSort() }, [
         svgIcon(ICON_SORT, { size: 18 }),
       ]),
     ]),
@@ -201,7 +201,7 @@ export function renderScope(host, state, actions) {
           isUid ? el("span", { class: "chip-avatar-uid", "aria-hidden": "true", text: "#" }) : null,
           el("span", { class: "chip-text" + (isUid ? " mono" : ""), text: entry }),
           el("span", { class: "chip-sub", text: isUid ? "高级 UID" : "未安装" }),
-          el("button", { type: "button", class: "chip-x", "aria-label": "Remove " + entry, text: "✕", onclick: () => actions.onToggleApp(entry) }),
+          el("button", { type: "button", class: "chip-x", "aria-label": "移除 " + entry, text: "✕", onclick: () => actions.onToggleApp(entry) }),
         ]);
       })),
     ]));

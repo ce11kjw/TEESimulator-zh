@@ -57,7 +57,7 @@ export function renderKeys(mount, state, handler) {
   if (selected.size) {
     actionBtns.push(el("button", {
       class: "btn danger", disabled: deleting,
-      text: deleting ? "删除中…" : "删除选中 (" + selected.size + ")",
+      text: deleting ? "删除中…" : "Delete selected (" + selected.size + ")",
       onclick: () => handler("deleteSelected"),
     }));
   }
@@ -89,9 +89,9 @@ export function renderKeys(mount, state, handler) {
     mount.appendChild(el("div", { class: "card" }, [el("div", { class: "banner" }, [
       el("div", { text: "此 Android 版本不支持密钥列表功能。" }),
       el("div", { class: "muted small", text:
-        "在 Android 10 和 11 上没有 keystore2 数据库可供检查，模块生成的密钥是" +
-        "会话级的 — 仅在密钥库重启前保留（持久化功能" +
-        "尚未实现）。" +
+        "On Android 10 and 11 there is no keystore2 database to inspect, and the keys the module " +
+        "generates are session-scoped — kept only until the keystore restarts (persistence there " +
+        "is not yet implemented)." +
         (apiLevel ? "  (Android API " + apiLevel + ")" : "") }),
     ])]));
     return;
@@ -110,7 +110,7 @@ export function renderKeys(mount, state, handler) {
   const q = filter.trim().toLowerCase();
   let matched = q ? keys.filter((k) => matchesFilter(k, q)) : keys;
   // The apps' own untouched (real hardware) keys are hidden by default so the list shows only what we
-  // spoofed; the "全部" scope segment reveals them for inspection or deletion.
+  // spoofed; the "All" scope segment reveals them for inspection or deletion.
   const hiddenReal = spoofedOnly ? matched.filter((k) => !isSpoofed(k)).length : 0;
   if (spoofedOnly) matched = matched.filter(isSpoofed);
   const shown = matched.slice().sort((a, b) => classRank(a) - classRank(b));
@@ -181,9 +181,9 @@ function searchCard(filter, shown, menuOpen, spoofedOnly, hiddenReal, handler) {
     ]));
   }
 
-  // Scope control: "伪造的" (default) lists only keys this module spoofed; "全部" also shows the apps'
+  // Scope control: "Spoofed" (default) lists only keys this module spoofed; "All" also shows the apps'
   // own real device keys. Both segments drive the same toggleSpoofed action — clicking the active one
-  // is a no-op. The hint reports how many real keys "伪造的" is currently hiding.
+  // is a no-op. The hint reports how many real keys "Spoofed" is currently hiding.
   const scope = el("div", { class: "segmented keyscope", role: "group", "aria-label": "显示哪些密钥" }, [
     el("button", {
       class: "seg" + (spoofedOnly ? " on" : ""), type: "button", text: "伪造的",
@@ -232,10 +232,10 @@ function stateLabel(s) {
 // The four key classes the daemon reports, in the order spoofed-before-untouched, each with its
 // display label and badge modifier class. An unknown/absent class is treated as "untouched".
 const KEY_CLASSES = {
-  generated: { label: "已生成", cls: "kclass-generated", rank: 0 },
-  delegated: { label: "已委托", cls: "kclass-delegated", rank: 1 },
-  patched: { label: "已修补", cls: "kclass-patched", rank: 2 },
-  untouched: { label: "未修改", cls: "kclass-untouched", rank: 3 },
+  generated: { label: "Generated", cls: "kclass-generated", rank: 0 },
+  delegated: { label: "Delegated", cls: "kclass-delegated", rank: 1 },
+  patched: { label: "Patched", cls: "kclass-patched", rank: 2 },
+  untouched: { label: "Untouched", cls: "kclass-untouched", rank: 3 },
 };
 
 function keyClass(k) {

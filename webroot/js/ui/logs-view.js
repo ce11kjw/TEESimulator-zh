@@ -174,7 +174,7 @@ export function renderLogFilters(state, actions) {
   return el("div", {}, [
     el("div", { class: "sheet-head" }, [
       el("h2", { text: "筛选日志" }),
-      el("button", { class: "iconbtn", type: "button", "aria-label": "Close", onclick: () => actions.close() }, [
+      el("button", { class: "iconbtn", type: "button", "aria-label": "关闭", onclick: () => actions.close() }, [
         el("span", { class: "x-mark", "aria-hidden": "true" }),
       ]),
     ]),
@@ -205,7 +205,7 @@ export function renderSaveSheet(state, actions) {
   return el("div", {}, [
     el("div", { class: "sheet-head" }, [
       el("h2", { text: "保存日志" }),
-      el("button", { class: "iconbtn", type: "button", "aria-label": "Close", onclick: () => actions.close() }, [
+      el("button", { class: "iconbtn", type: "button", "aria-label": "关闭", onclick: () => actions.close() }, [
         el("span", { class: "x-mark", "aria-hidden": "true" }),
       ]),
     ]),

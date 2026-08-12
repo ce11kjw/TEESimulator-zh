@@ -95,7 +95,7 @@ export function create(mount) {
   function openFilters() {
     filterHost = document.createElement("div");
     filterHost.appendChild(renderLogFilters({ filter, tags: seenTags() }, filterActions));
-    filterOverlay = openSheet(filterHost, { label: "Filter logs", onClose: () => { filterHost = null; filterOverlay = null; } });
+    filterOverlay = openSheet(filterHost, { label: "筛选日志", onClose: () => { filterHost = null; filterOverlay = null; } });
   }
 
   function closeFilters() {
@@ -107,31 +107,31 @@ export function create(mount) {
   // the log text to the daemon, which (as root) writes it to the chosen folder/name and
   // returns the final path. The folder is remembered in localStorage for next time.
   function openSaveSheet() {
-    if (!lines.length) { toast("没有可保存的日志"); return; }
+    if (!lines.length) { toast("No logs to save"); return; }
     const dir = localStorage.getItem(SAVE_DIR_KEY) || DEFAULT_SAVE_DIR;
     const name = defaultLogName(moduleVer);
     saveHost = document.createElement("div");
     saveHost.appendChild(renderSaveSheet({ dir, name }, saveActions));
-    saveOverlay = openSheet(saveHost, { label: "Save logs", onClose: () => { saveHost = null; saveOverlay = null; } });
+    saveOverlay = openSheet(saveHost, { label: "保存日志", onClose: () => { saveHost = null; saveOverlay = null; } });
   }
 
   const saveActions = {
     async save(dir, name) {
       const text = lines.map((l) => l.text).join("\n");
-      if (!text) { toast("没有可保存的日志"); return; }
+      if (!text) { toast("No logs to save"); return; }
       const folder = (dir || "").trim() || DEFAULT_SAVE_DIR;
       try {
         const res = await keyAdmin("logsWrite", { dir: folder, name, text });
         if (res && res.ok) {
           localStorage.setItem(SAVE_DIR_KEY, folder);
-          toast("已保存到 " + res.path);
+          toast("Saved to " + res.path);
           if (saveOverlay) saveOverlay.close();
         } else {
-          toast("保存失败：" + ((res && res.error) || "未知错误"));
+          toast("Save failed: " + ((res && res.error) || "unknown error"));
         }
       } catch (e) {
         console.error("[logs.save] write failed:", e);
-        toast("保存失败：" + (e && e.message ? e.message : String(e)));
+        toast("Save failed: " + (e && e.message ? e.message : String(e)));
       }
     },
     close() { if (saveOverlay) saveOverlay.close(); },

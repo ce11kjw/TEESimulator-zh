@@ -20,10 +20,10 @@ export async function load() {
   try {
     overrides = JSON.parse(raw);
   } catch (e) {
-    return { ok: false, error: "overrides.json 不是有效的 JSON：" + e.message };
+    return { ok: false, error: "overrides.json is not valid JSON: " + e.message };
   }
   if (!overrides || typeof overrides !== "object" || Array.isArray(overrides)) {
-    return { ok: false, error: "overrides.json 根节点必须是一个 JSON 对象。" };
+    return { ok: false, error: "overrides.json root must be a JSON object." };
   }
   return { ok: true, overrides };
 }

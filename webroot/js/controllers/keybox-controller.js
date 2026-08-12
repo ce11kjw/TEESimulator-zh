@@ -39,7 +39,7 @@ export function create(mount) {
     error = null;
     sheetHost = document.createElement("div");
     sheetHost.appendChild(renderKeyboxImport({ importName, importContent, error }, actions));
-    sheetOverlay = openSheet(sheetHost, { label: "Import keybox", onClose: () => { sheetHost = null; sheetOverlay = null; } });
+    sheetOverlay = openSheet(sheetHost, { label: "导入密钥盒", onClose: () => { sheetHost = null; sheetOverlay = null; } });
   }
 
   function closeImport() {
@@ -53,11 +53,11 @@ export function create(mount) {
     try {
       data = await keyAdmin("keyboxInspect", { name });
     } catch (e) {
-      toast("检查失败：" + (e && e.message ? e.message : String(e)));
+      toast("Inspect failed: " + (e && e.message ? e.message : String(e)));
       return;
     }
     const content = renderKeyboxInspect({ name, data }, { close: () => closeInspect() });
-    inspectOverlay = openOverlay(content, { variant: "panel", label: "Keybox", onClose: () => { inspectOverlay = null; } });
+    inspectOverlay = openOverlay(content, { variant: "panel", label: "密钥盒", onClose: () => { inspectOverlay = null; } });
     const title = content.querySelector(".drill-title");
     if (title) title.focus();
   }
@@ -98,11 +98,11 @@ export function create(mount) {
       }
       if (!r.ok) {
         error = r.error;
-        toast("导入失败：" + (r.error || "未知错误"));
+        toast("Import failed: " + (r.error || "unknown error"));
         renderSheet();
         return;
       }
-      toast("已导入 " + r.name);
+      toast("Imported " + r.name);
       closeImport();
       return refresh();
     },
@@ -111,15 +111,15 @@ export function create(mount) {
       const next = await promptDialog(`Rename "${name}" to:`, name, { okLabel: "Rename" });
       if (next == null) return; // cancelled
       const r = await renameKeybox(name, next, files);
-      if (!r.ok) { toast("重命名失败：" + (r.error || "未知错误")); return; }
-      toast("已重命名为 " + r.name);
+      if (!r.ok) { toast("Rename failed: " + (r.error || "unknown error")); return; }
+      toast("Renamed to " + r.name);
       return refresh();
     },
 
     async delete(name) {
       if (!(await confirmDialog(`Delete keybox "${name}"? This cannot be undone.`))) return;
       const r = await deleteKeybox(name);
-      if (!r.ok) { toast("删除失败：" + (r.error || "未知错误")); return; }
+      if (!r.ok) { toast("Delete failed: " + (r.error || "unknown error")); return; }
       toast("Deleted " + (r.name || name));
       return refresh();
     },
