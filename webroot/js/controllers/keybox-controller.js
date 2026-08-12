@@ -98,11 +98,11 @@ export function create(mount) {
       }
       if (!r.ok) {
         error = r.error;
-        toast("Import failed: " + (r.error || "unknown error"));
+        toast("导入失败：" + (r.error || "未知错误"));
         renderSheet();
         return;
       }
-      toast("Imported " + r.name);
+      toast("已导入 " + r.name);
       closeImport();
       return refresh();
     },
@@ -111,15 +111,15 @@ export function create(mount) {
       const next = await promptDialog(`Rename "${name}" to:`, name, { okLabel: "Rename" });
       if (next == null) return; // cancelled
       const r = await renameKeybox(name, next, files);
-      if (!r.ok) { toast("Rename failed: " + (r.error || "unknown error")); return; }
-      toast("Renamed to " + r.name);
+      if (!r.ok) { toast("重命名失败：" + (r.error || "未知错误")); return; }
+      toast("已重命名为 " + r.name);
       return refresh();
     },
 
     async delete(name) {
       if (!(await confirmDialog(`Delete keybox "${name}"? This cannot be undone.`))) return;
       const r = await deleteKeybox(name);
-      if (!r.ok) { toast("Delete failed: " + (r.error || "unknown error")); return; }
+      if (!r.ok) { toast("删除失败：" + (r.error || "未知错误")); return; }
       toast("Deleted " + (r.name || name));
       return refresh();
     },

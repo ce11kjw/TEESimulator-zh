@@ -70,12 +70,12 @@ export function create(mount, opts = {}) {
   // daemon's computed default. Never throws to the view — surfaces failures as a toast.
   async function writeOverride(field, value) {
     const cur = await overridesIo.load();
-    if (!cur.ok) { toast("Cannot read overrides.json: " + cur.error); return; }
+    if (!cur.ok) { toast("无法读取 overrides.json：" + cur.error); return; }
     const next = { ...cur.overrides };
     if (value == null || value === "") delete next[field];
     else next[field] = value;
     const res = await overridesIo.save(next);
-    if (!res.ok) { toast("Save failed: " + res.error); return; }
+    if (!res.ok) { toast("保存失败：" + res.error); return; }
     toast("伪造值已保存 — 正在应用…");
     await new Promise((r) => setTimeout(r, OVERRIDE_SETTLE_MS));
     await refreshHealth();
