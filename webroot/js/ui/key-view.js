@@ -110,7 +110,7 @@ export function renderKeys(mount, state, handler) {
   const q = filter.trim().toLowerCase();
   let matched = q ? keys.filter((k) => matchesFilter(k, q)) : keys;
   // The apps' own untouched (real hardware) keys are hidden by default so the list shows only what we
-  // spoofed; the "All" scope segment reveals them for inspection or deletion.
+  // spoofed; the "全部" scope segment reveals them for inspection or deletion.
   const hiddenReal = spoofedOnly ? matched.filter((k) => !isSpoofed(k)).length : 0;
   if (spoofedOnly) matched = matched.filter(isSpoofed);
   const shown = matched.slice().sort((a, b) => classRank(a) - classRank(b));
@@ -181,7 +181,7 @@ function searchCard(filter, shown, menuOpen, spoofedOnly, hiddenReal, handler) {
     ]));
   }
 
-  // Scope control: "伪造的" (default) lists only keys this module spoofed; "All" also shows the apps'
+  // Scope control: "伪造的" (default) lists only keys this module spoofed; "全部" also shows the apps'
   // own real device keys. Both segments drive the same toggleSpoofed action — clicking the active one
   // is a no-op. The hint reports how many real keys "伪造的" is currently hiding.
   const scope = el("div", { class: "segmented keyscope", role: "group", "aria-label": "显示哪些密钥" }, [
@@ -192,7 +192,7 @@ function searchCard(filter, shown, menuOpen, spoofedOnly, hiddenReal, handler) {
     }),
     el("button", {
       class: "seg" + (!spoofedOnly ? " on" : ""), type: "button", text: "全部",
-      "aria-pressed": !spoofedOnly ? "true" : "false", title: "Include the apps' own real device keys",
+      "aria-pressed": !spoofedOnly ? "true" : "false", title: "包含应用自身的设备真实密钥",
       onclick: () => { if (spoofedOnly) handler("toggleSpoofed"); },
     }),
   ]);

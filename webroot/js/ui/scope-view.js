@@ -196,7 +196,7 @@ export function renderScope(host, state, actions) {
         const isUid = UID_RE.test(entry);
         return el("span", {
           class: "chip removable scope-chip" + (isUid ? " advanced" : " warn"),
-          title: isUid ? "Advanced: targets caller uid " + entry.slice(4) : entry + " 在此设备上未安装",
+          title: isUid ? "高级：目标调用者 UID " + entry.slice(4) : entry + " 在此设备上未安装",
         }, [
           isUid ? el("span", { class: "chip-avatar-uid", "aria-hidden": "true", text: "#" }) : null,
           el("span", { class: "chip-text" + (isUid ? " mono" : ""), text: entry }),
@@ -319,7 +319,7 @@ function scopeRow(row, ctx, actions) {
   const pills = [];
   if (lowUid) pills.push(el("span", { class: "pill warn scope-pill", text: "系统 UID" }));
   if (claimedBy) pills.push(el("span", { class: "chip small scope-claimed", text: "in " + claimedBy }));
-  if (row.recent) pills.push(el("span", { class: "scope-recent-dot", title: "Requested a key since boot", "aria-label": "recent" }));
+  if (row.recent) pills.push(el("span", { class: "scope-recent-dot", title: "启动后请求过密钥", "aria-label": "recent" }));
   if (row.freq > 0) pills.push(el("span", { class: "scope-freq", title: row.freq + " key requests recorded", text: fmtFreq(row.freq) }));
 
   const cls = "scope-row" + (selected ? " selected" : "") + (claimedBy ? " claimed" : "");
@@ -327,7 +327,7 @@ function scopeRow(row, ctx, actions) {
   return el("button", {
     type: "button", class: cls, disabled: !!claimedBy,
     "aria-pressed": selected ? "true" : "false",
-    title: claimedBy ? "Already targeted by profile " + claimedBy : label,
+    title: claimedBy ? "已被配置 " + claimedBy + " 定位" : label,
     onclick: claimedBy ? null : () => actions.onToggleApp(toggleEntry),
   }, [
     iconEl(row, primary, label, iconUrl),

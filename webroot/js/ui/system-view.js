@@ -114,7 +114,7 @@ function harvestCard(status, actions = {}) {
   const sbAvailable = !!h.strongBoxAvailable;
   const modes = [
     { key: "tee", label: "可信环境" },
-    { key: "strongbox", label: "StrongBox" },
+    { key: "strongbox", label: "StrongBox安全芯片" },
   ];
   if (failed || !modes.some((m) => m.key === harvestMode)) harvestMode = "tee";
   const chipEls = modes.map((m) =>
@@ -293,7 +293,7 @@ function fmtOverrideValue(field, value) {
 
 function secLevel(n) {
   if (n == null || Number.isNaN(n)) return "—";
-  const names = ["软件", "可信环境", "StrongBox"];
+  const names = ["软件", "可信环境", "StrongBox安全芯片"];
   return (typeof n === "number" && names[n] ? names[n] : String(n)) + " (" + n + ")";
 }
 
@@ -360,7 +360,7 @@ function updateCard(s, actions) {
   // An update is available: headline pill, what's-new disclosure, variant + Install.
   card.appendChild(el("div", { class: "update-head" }, [
     el("span", { class: "pill warn", text: "有可用更新" }),
-    el("span", { class: "mono small", text: "canary-" + (latest.code || "?") }),
+    el("span", { class: "mono small", text: "金丝雀-" + (latest.code || "?") }),
   ]));
   if (latest.name) card.appendChild(el("div", { class: "small", text: latest.name }));
 

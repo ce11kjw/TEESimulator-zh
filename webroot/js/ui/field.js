@@ -220,7 +220,7 @@ function scopeWidget(d, value, ctx) {
       const label = isUid ? entry : ((labelMap && labelMap.get && labelMap.get(entry)) || entry);
       return el("span", {
         class: "chip scope-chip" + (isUid ? " advanced" : "") + (missing ? " warn" : ""),
-        title: isUid ? "Advanced: targets caller uid " + entry.slice(4)
+        title: isUid ? "高级：目标调用者 UID " + entry.slice(4)
           : missing ? entry + " 未安装（安装后将自动匹配）" : entry,
       }, [
         (isUid || missing) ? el("span", { class: "scope-chip-dot", "aria-hidden": "true" }) : null,
