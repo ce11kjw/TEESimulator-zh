@@ -159,8 +159,8 @@ function harvestCard(status, actions = {}) {
       if (val != null && val !== "") rows.appendChild(kvRow(label, String(val), overrides[label] != null));
     };
 
-    add("verifiedBootState", h.verifiedBootState == null ? null : named(h.verifiedBootState) + " (" + h.verifiedBootState + ")");
-    add("deviceLocked", h.deviceLocked == null ? null : String(h.deviceLocked));
+    add("验证启动状态", h.verifiedBootState == null ? null : named(h.verifiedBootState) + " (" + h.verifiedBootState + ")");
+    add("设备锁定", h.deviceLocked == null ? null : String(h.deviceLocked));
     if (h.verifiedBootKey) hexRow(rows, "verifiedBootKey", h.verifiedBootKey, overrides["verifiedBootKey"] != null);
     if (h.verifiedBootHash) hexRow(rows, "verifiedBootHash", h.verifiedBootHash, overrides["verifiedBootHash"] != null);
     add("osVersion", h.osVersion);
@@ -207,19 +207,46 @@ function overridesGroup(overrides, actions) {
 
 // A stable, readable order for the override rows (unknown fields fall to the end).
 const ORDER = [
-  "deviceLocked", "verifiedBootState", "verifiedBootKey", "verifiedBootHash",
+  "设备锁定", "验证启动状态", "verifiedBootKey", "verifiedBootHash",
   "attestationSecurityLevel", "keymasterSecurityLevel", "attestationVersion", "keymasterVersion",
   "moduleHash", "osVersion", "osPatchLevel", "vendorPatchLevel", "bootPatchLevel",
   "serial", "imei", "imei2", "meid",
 ];
 
 const SOURCE_LABEL = { required: "必需", supplement: "补充", synthesized: "合成" };
+
+// Field label translations for the harvest section
+const FIELD_LABEL = {
+  verifiedBootState: "验证启动状态",
+  deviceLocked: "设备锁定",
+  verifiedBootKey: "验证启动密钥",
+  verifiedBootHash: "验证启动哈希",
+  osVersion: "系统版本",
+  osPatchLevel: "系统补丁级别",
+  vendorPatchLevel: "厂商补丁级别",
+  bootPatchLevel: "引导补丁级别",
+  attestationSecurityLevel: "认证安全级别",
+  keymasterSecurityLevel: "密钥管理安全级别",
+  attestationVersion: "认证版本",
+  keymasterVersion: "密钥管理版本",
+  moduleHash: "模块哈希",
+  brand: "品牌",
+  device: "设备",
+  product: "产品",
+  manufacturer: "制造商",
+  model: "型号",
+  serial: "序列号",
+  imei: "IMEI",
+  meid: "MEID",
+  imei2: "IMEI2",
+  harvestedAt: "采集时间",
+};
 const HEX_FIELDS = new Set(["verifiedBootKey", "verifiedBootHash", "moduleHash"]);
 
 function overrideRow(field, o, actions) {
   const badge = el("span", { class: "badge badge-" + (o.source || "必需"), text: SOURCE_LABEL[o.source] || o.source || "" });
   const edited = o.userEdited ? el("span", { class: "badge badge-edited", text: "已编辑" }) : null;
-  const label = el("span", { class: "kv-label" }, [field, badge, edited]);
+  const label = el("span", { class: "kv-label" }, [FIELD_LABEL[field] || field, badge, edited]);
 
   if (!o.editable) {
     const val = el("span", { class: "kv-val" + (HEX_FIELDS.has(field) ? " mono kv-hex" : ""), text: fmtOverrideValue(field, o.value) });
@@ -259,7 +286,7 @@ function editorFor(field, value) {
 // Display formatting for an override's machine value, by field.
 function fmtOverrideValue(field, value) {
   if (value == null || value === "") return "—";
-  if (field === "verifiedBootState") return named(Number(value)) + " (" + value + ")";
+  if (field === "验证启动状态") return named(Number(value)) + " (" + value + ")";
   if (field === "attestationSecurityLevel" || field === "keymasterSecurityLevel") return secLevel(Number(value));
   return String(value);
 }
@@ -272,7 +299,7 @@ function secLevel(n) {
 
 function kvRow(label, val, replaced) {
   return el("div", { class: "kv" + (replaced ? " kv-replaced" : "") }, [
-    el("span", { class: "kv-label", text: label }),
+    el("span", { class: "kv-label", text: FIELD_LABEL[label] || label }),
     el("span", { class: "kv-val", text: val }),
   ]);
 }
@@ -285,7 +312,7 @@ function hexRow(rows, label, b64, replaced) {
   const allZero = hex != null && hex.length > 0 && /^0+$/.test(hex);
   const flag = allZero ? el("span", { class: "chip warn small", text: "全零" }) : null;
   rows.appendChild(el("div", { class: "kv kv-stack" + (replaced ? " kv-replaced" : "") }, [
-    el("span", { class: "kv-label" }, [label, flag]),
+    el("span", { class: "kv-label" }, [FIELD_LABEL[label] || label, flag]),
     el("span", { class: "mono kv-hex", text: hex || "—" }),
   ]));
 }
